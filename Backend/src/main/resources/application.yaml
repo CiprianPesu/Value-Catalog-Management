@@ -1,0 +1,58 @@
+spring:
+  application:
+    name: EHealthTranslations
+
+  security:
+    allowedOrigins: ${ALLOWED_ORIGINS:http://localhost:3000}
+
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI}
+
+        roles:
+          guest: ${ROLE_GUEST:guest}
+          admin: ${ROLE_ADMIN:admin}
+          translator: ${ROLE_TRANSLATOR:translator}
+          validator: ${ROLE_VALIDATOR:validator}
+
+  servlet:
+    multipart:
+      max-file-size: ${MAX_FILE_SIZE:50MB}
+      max-request-size: ${MAX_REQUEST_SIZE:50MB}
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: ${DDL_AUTO:update}
+
+xmlFileFormat:
+  table-header-row: ${XML_TABLE_HEADER_ROW:7}
+  codeSystemIdCol: ${XML_CODE_SYSTEM_ID_COL:0}
+  codeSystemVersionCol: ${XML_CODE_SYSTEM_VERSION_COL:1}
+  conceptCodeCol: ${XML_CONCEPT_CODE_COL:2}
+  descriptionCol: ${XML_DESCRIPTION_COL:3}
+  descriptionTranslationCol: ${XML_DESCRIPTION_TRANSLATION_COL:5}
+  translationColumnName: ${XML_TRANSLATION_COLUMN_NAME:RO-RO}
+
+audit:
+  applicationName: ${AUDIT_APPLICATION_NAME:MasterCatalogTranslationBackend}
+
+  datasource:
+    url: ${AUDIT_DB_URL}
+    username: ${AUDIT_DB_USER}
+    password: ${AUDIT_DB_PASSWORD}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ${MANAGEMENT_ENDPOINTS:health,info}
+
+  endpoint:
+    health:
+      show-details: ${HEALTH_DETAILS:always}

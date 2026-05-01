@@ -1,0 +1,62 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./Backend
+    container_name: translations-backend
+    ports:
+      - "8080:8080"
+    environment:
+      # Spring profile
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-prod}
+
+      # Main DB
+      - DB_URL=${DB_URL}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+
+      # Audit DB
+      - AUDIT_DB_URL=${AUDIT_DB_URL}
+      - AUDIT_DB_USER=${AUDIT_DB_USER}
+      - AUDIT_DB_PASSWORD=${AUDIT_DB_PASSWORD}
+
+      # CORS
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
+
+      # Keycloak
+      - KEYCLOAK_ISSUER_URI=${KEYCLOAK_ISSUER_URI}
+
+      # Roles (not sensitive, but configurable)
+      - ROLE_GUEST=${ROLE_GUEST:-guest}
+      - ROLE_ADMIN=${ROLE_ADMIN:-admin}
+      - ROLE_TRANSLATOR=${ROLE_TRANSLATOR:-translator}
+      - ROLE_VALIDATOR=${ROLE_VALIDATOR:-validator}
+
+      # XML file format (safe, but still configurable)
+      - XML_TABLE_HEADER_ROW=${XML_TABLE_HEADER_ROW:-7}
+      - XML_CODE_SYSTEM_ID_COL=${XML_CODE_SYSTEM_ID_COL:-0}
+      - XML_CODE_SYSTEM_VERSION_COL=${XML_CODE_SYSTEM_VERSION_COL:-1}
+      - XML_CONCEPT_CODE_COL=${XML_CONCEPT_CODE_COL:-2}
+      - XML_DESCRIPTION_COL=${XML_DESCRIPTION_COL:-3}
+      - XML_DESCRIPTION_TRANSLATION_COL=${XML_DESCRIPTION_TRANSLATION_COL:-5}
+      - XML_TRANSLATION_COLUMN_NAME=${XML_TRANSLATION_COLUMN_NAME:-RO-RO}
+
+  frontend:
+    build: ./Frontend
+    container_name: translations-frontend
+    ports:
+      - "3000:80"
+    environment:
+      - BACKEND_URL=${BACKEND_URL}
+      - KEYCLOAK_URL=${KEYCLOAK_URL}
+      - KEYCLOAK_REALM=${KEYCLOAK_REALM}
+      - KEYCLOAK_CLIENT=${KEYCLOAK_CLIENT}
+
+      # Roles
+      - ROLE_GUEST=${ROLE_GUEST:-guest}
+      - ROLE_ADMINISTRATOR=${ROLE_ADMINISTRATOR:-admin}
+      - ROLE_TRANSLATOR=${ROLE_TRANSLATOR:-translator}
+      - ROLE_VALIDATOR=${ROLE_VALIDATOR:-validator}
+
+    depends_on:
+      - backend
