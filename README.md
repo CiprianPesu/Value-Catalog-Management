@@ -57,20 +57,6 @@ The application follows a modern full-stack architecture with clear separation o
 
 ---
 
-## Tech Stack
-
-### Language Composition
-
-| Language | Percentage |
-|----------|-----------|
-| TypeScript | 71.3% |
-| Java | 23.5% |
-| CSS | 4.1% |
-| JavaScript | 0.4% |
-| Shell | 0.3% |
-| Dockerfile | 0.3% |
-| HTML | 0.1% |
-
 ### Backend
 
 - **Java** 21
@@ -332,30 +318,3 @@ Once the backend is running, Swagger API documentation is available at:
 http://localhost:8080/swagger-ui.html
 ```
 
----
-
-## Contributing
-
-Contributions are welcome! Please ensure:
-
-- Code follows project style guidelines
-- Tests pass before submitting changes
-- Docker images build successfully
-- Frontend: `npm run lint` passes
-- Backend: `mvn clean test` passes
-
----
-
-## License
-
-This project is part of the Value Catalog Management system for EU datasets.
-
----
-
-## Support
-
-For issues or questions:
-1. Check existing documentation
-2. Review test files in `/TestFiles`
-3. Consult Keycloak and Spring Boot documentation
-4. Open an issue in the repository
