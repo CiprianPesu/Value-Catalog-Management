@@ -1,6 +1,6 @@
-# MasterCatalogTranslation
+# Value Catalog Management
 
-**MasterCatalogTranslation** is a **Spring Boot + React web application** used to **manually validate and correct automatic translations of the Master Value Catalogs**.
+**Value Catalog Management** is a **Spring Boot + React web application** used to **manually validate and correct automatic translations of the Master Value Catalogs**.
 
 The platform enables domain experts to review machine-generated translations, correct errors, and ensure high-quality multilingual catalog data.
 
@@ -10,7 +10,7 @@ The platform enables domain experts to review machine-generated translations, co
 
 Automated translation tools can generate initial translations of catalog values but often require **manual verification**.
 
-**MasterCatalogTranslation** provides a platform where translators and domain experts can:
+**Value Catalog Management** provides a platform where translators and domain experts can:
 
 - Review machine-generated translations
 - Correct inaccurate translations
@@ -28,23 +28,27 @@ The application follows a modern full-stack architecture with clear separation o
 
 **Frontend**
 
-- React 19 + TypeScript
-- Vite build system
-- TailwindCSS UI framework
-- TanStack Query for data fetching
-- TanStack Table for data grids
-- Keycloak authentication
-- shadcn/ui + Radix UI components
-- Recharts for data visualization
+- React 19.2.4 + TypeScript 5.9.3
+- Vite 7.3.1 build system
+- TailwindCSS 4 UI framework
+- TanStack Query 5.90.21 for data fetching
+- TanStack Table 8.21.3 for data grids
+- Keycloak 26.2.3 authentication
+- Radix UI + lucide-react components
+- Recharts 3.8.0 for data visualization
+- React Router 7.13.1 for navigation
+- Motion 12.35.0 for animations
 
 **Backend**
 
-- Spring Boot 4 REST API
-- OAuth2 authentication (Resource Server)
-- JPA/Hibernate for data persistence
-- Excel import/export support (Apache POI)
-- PostgreSQL database
-- Audit logging support
+- Spring Boot 4.0.1 REST API
+- Spring Security with OAuth2 (Resource Server)
+- Spring Data JPA with Hibernate for persistence
+- Apache POI 5.5.1 for Excel processing
+- PostgreSQL database driver
+- SpringDoc OpenAPI 3.0.2 for API documentation
+- Lombok 1.18.44 for code generation
+- eHealth Audit library 1.0.0
 
 **Database**
 
@@ -54,6 +58,18 @@ The application follows a modern full-stack architecture with clear separation o
 ---
 
 ## Tech Stack
+
+### Language Composition
+
+| Language | Percentage |
+|----------|-----------|
+| TypeScript | 71.3% |
+| Java | 23.5% |
+| CSS | 4.1% |
+| JavaScript | 0.4% |
+| Shell | 0.3% |
+| Dockerfile | 0.3% |
+| HTML | 0.1% |
 
 ### Backend
 
@@ -75,16 +91,15 @@ The application follows a modern full-stack architecture with clear separation o
 - **TypeScript** 5.9.3
 - **Vite** 7.3.1
 - **TailwindCSS** 4
-- shadcn/ui components
-- Radix UI
-- TanStack Query 5.90.21
-- TanStack Table 8.21.3
-- Axios for HTTP requests
-- React Router 7.13.1
-- Recharts for charting
-- React Dropzone for file uploads
+- **Recharts** 3.8.0 (charting)
+- TanStack Query 5.90.21 (data fetching)
+- TanStack Table 8.21.3 (data grids)
+- Axios 1.13.6 for HTTP requests
+- React Router 7.13.1 for routing
+- React Dropzone 15.0.0 for file uploads
 - Keycloak JS 26.2.3 for authentication
-- ESLint & Prettier for code quality
+- Motion 12.35.0 for animations
+- ESLint 9.39.0 & Prettier 3.8.1 for code quality
 
 ---
 
@@ -96,7 +111,7 @@ The backend acts as a **Resource Server** and validates tokens issued by the con
 
 ### Supported OAuth2 Providers
 
-- **Keycloak** (primary)
+- **Keycloak** 26.2.3 (primary)
 - Any OpenID Connect compatible provider
 
 ### User Roles
@@ -122,7 +137,7 @@ These roles are mapped from the OAuth2 provider (Keycloak).
 - Java 21 (for local backend development)
 - Node.js 22+ (for local frontend development)
 - PostgreSQL (if running without Docker)
-- Keycloak instance configured with OAuth2
+- Keycloak 26.2.3 instance configured with OAuth2
 
 ### Local Development
 
@@ -326,6 +341,8 @@ Contributions are welcome! Please ensure:
 - Code follows project style guidelines
 - Tests pass before submitting changes
 - Docker images build successfully
+- Frontend: `npm run lint` passes
+- Backend: `mvn clean test` passes
 
 ---
 
