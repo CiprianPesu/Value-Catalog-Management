@@ -6,7 +6,7 @@ The platform enables domain experts to review machine-generated translations, co
 
 ---
 
-# Overview
+## Overview
 
 Automated translation tools can generate initial translations of catalog values but often require **manual verification**.
 
@@ -20,11 +20,9 @@ Automated translation tools can generate initial translations of catalog values 
 
 ---
 
-# Architecture
+## Architecture
 
-The application follows a modern full-stack architecture.
-
-
+The application follows a modern full-stack architecture with clear separation of concerns.
 
 ### Components
 
@@ -32,100 +30,315 @@ The application follows a modern full-stack architecture.
 
 - React 19 + TypeScript
 - Vite build system
-- TailwindCSS UI
+- TailwindCSS UI framework
 - TanStack Query for data fetching
 - TanStack Table for data grids
 - Keycloak authentication
 - shadcn/ui + Radix UI components
+- Recharts for data visualization
 
 **Backend**
 
-- Spring Boot REST API
-- OAuth2 authentication
-- JPA/Hibernate persistence
-- Excel import/export support
+- Spring Boot 4 REST API
+- OAuth2 authentication (Resource Server)
+- JPA/Hibernate for data persistence
+- Excel import/export support (Apache POI)
+- PostgreSQL database
+- Audit logging support
 
 **Database**
 
-- PostgreSQL
+- PostgreSQL (Main application database)
+- PostgreSQL (Separate audit database)
 
 ---
 
-# Tech Stack
+## Tech Stack
 
-## Backend
+### Backend
 
-- Java 17
-- Spring Boot 4
+- **Java** 21
+- **Spring Boot** 4.0.1
 - Spring Web
-- Spring Security
-- OAuth2 Client
-- OAuth2 Resource Server
+- Spring Security with OAuth2
 - Spring Data JPA
 - Hibernate
-- PostgreSQL
-- Lombok
-- Apache POI (Excel processing)
+- PostgreSQL driver
+- Lombok (code generation)
+- Apache POI 5.5.1 (Excel processing)
+- SpringDoc OpenAPI 3.0.2 (API documentation)
 - Maven
 
----
+### Frontend
 
-## Frontend
-
-- React 19
-- TypeScript
-- Vite
-- TailwindCSS v4
-- shadcn/ui
+- **React** 19.2.4
+- **TypeScript** 5.9.3
+- **Vite** 7.3.1
+- **TailwindCSS** 4
+- shadcn/ui components
 - Radix UI
-- TanStack Query
-- TanStack Table
-- Axios
-- React Router
-- Recharts
-- React Dropzone
-- Keycloak JS
+- TanStack Query 5.90.21
+- TanStack Table 8.21.3
+- Axios for HTTP requests
+- React Router 7.13.1
+- Recharts for charting
+- React Dropzone for file uploads
+- Keycloak JS 26.2.3 for authentication
+- ESLint & Prettier for code quality
 
 ---
 
-# Security
+## Security
 
 Authentication is handled using **OAuth2 with JWT tokens**.
 
 The backend acts as a **Resource Server** and validates tokens issued by the configured OAuth2 provider.
 
-Example providers:
+### Supported OAuth2 Providers
 
-- Keycloak
-- Other OpenID Connect providers
+- **Keycloak** (primary)
+- Any OpenID Connect compatible provider
 
-# User Roles
+### User Roles
 
-The application defines several roles used for translation management.
+The application defines several roles used for translation management:
 
 | Role | Description |
 |-----|-----|
-| guest | Read-only access |
+| guest | Read-only access to translations |
 | translator | Can modify translations and approve automatic translations |
-| validator | Can validate the translations made by the **translator** |
-| admin | Can upload the MasterValueCatalog files and download the translated catalogs |
+| validator | Can validate the translations made by translators |
+| admin | Can upload Master Value Catalog files and download translated catalogs |
 
-These roles are mapped from the OAuth2 provider.
+These roles are mapped from the OAuth2 provider (Keycloak).
 
 ---
-# Deploy Docker
 
-The project includes a **docker-compose-deploy.yml** file that serves as an example of how to configure the deployments
+## Getting Started
 
-The **Frontend** and **Backend** projects each have a Dockerfile that build the respective images
+### Prerequisites
 
-The **Backend** Dockerfile requires that the maven package has been run in order to create the **/target** folder. It may also reacquire the certificate form the **Keycloak** server be updated into the **/certificate** folder
+- Docker & Docker Compose
+- Java 21 (for local backend development)
+- Node.js 22+ (for local frontend development)
+- PostgreSQL (if running without Docker)
+- Keycloak instance configured with OAuth2
 
-## You can export the created images form your docker repo with: 
+### Local Development
 
- - docker save -o translations-backend.tar translations-backend
- - docker save -o translations-frontend.tar translations-frontend
+#### Backend
 
-## You can load them intro another docker instance with: 
- - docker load -i translations-frontend.tar
- - docker load -i translations-frontend.tar
+```bash
+cd Backend
+mvn clean install
+mvn spring-boot:run
+```
+
+Backend will be available at `http://localhost:8080`
+
+#### Frontend
+
+```bash
+cd Frontend
+npm install
+npm run dev
+```
+
+Frontend will be available at `http://localhost:5173` (Vite dev server)
+
+### Build
+
+#### Backend
+
+```bash
+cd Backend
+mvn clean package
+```
+
+This creates a JAR file in `/target` directory.
+
+#### Frontend
+
+```bash
+cd Frontend
+npm run build
+```
+
+This creates optimized production build in `/dist` directory.
+
+---
+
+## Docker Deployment
+
+### Development Setup
+
+The project includes a **docker-compose.yml** file for local development:
+
+```bash
+docker-compose up --build
+```
+
+- Frontend: `http://localhost:3000`
+- Backend: `http://localhost:8080`
+
+### Production Setup
+
+Use **docker-compose-deploy.yml** for production deployments:
+
+```bash
+docker-compose -f docker-compose-deploy.yml up -d
+```
+
+This setup uses pre-built images and supports environment variable configuration.
+
+### Building Docker Images
+
+#### Backend Image
+
+```bash
+cd Backend
+mvn clean package
+docker build -t translations-backend:latest .
+```
+
+**Requirements:**
+- Maven package must be run first to create `/target` folder
+- SSL certificate (`fullchain.pem`) should be present for Keycloak SSL validation
+
+#### Frontend Image
+
+```bash
+cd Frontend
+docker build -t translations-frontend:latest .
+```
+
+### Exporting Docker Images
+
+```bash
+docker save -o translations-backend.tar translations-backend:latest
+docker save -o translations-frontend.tar translations-frontend:latest
+```
+
+### Loading Docker Images
+
+```bash
+docker load -i translations-backend.tar
+docker load -i translations-frontend.tar
+```
+
+---
+
+## Environment Configuration
+
+Both development and production deployments use environment variables for configuration.
+
+### Backend Environment Variables
+
+```env
+# Spring configuration
+SPRING_PROFILES_ACTIVE=prod
+
+# Database
+DB_URL=jdbc:postgresql://postgres:5432/translations
+DB_USER=postgres
+DB_PASSWORD=password
+
+# Audit Database
+AUDIT_DB_URL=jdbc:postgresql://postgres:5432/audit
+AUDIT_DB_USER=postgres
+AUDIT_DB_PASSWORD=password
+
+# CORS
+ALLOWED_ORIGINS=http://localhost:3000
+
+# Keycloak
+KEYCLOAK_ISSUER_URI=https://keycloak.example.com/realms/your-realm
+
+# Roles (configurable)
+ROLE_GUEST=guest
+ROLE_ADMIN=admin
+ROLE_TRANSLATOR=translator
+ROLE_VALIDATOR=validator
+
+# XML Configuration
+XML_TABLE_HEADER_ROW=7
+XML_CODE_SYSTEM_ID_COL=0
+XML_CODE_SYSTEM_VERSION_COL=1
+XML_CONCEPT_CODE_COL=2
+XML_DESCRIPTION_COL=3
+XML_DESCRIPTION_TRANSLATION_COL=5
+XML_TRANSLATION_COLUMN_NAME=RO-RO
+```
+
+### Frontend Environment Variables
+
+```env
+BACKEND_URL=http://backend:8080
+KEYCLOAK_URL=https://keycloak.example.com
+KEYCLOAK_REALM=your-realm
+KEYCLOAK_CLIENT=translations-frontend
+
+# Roles (configurable)
+ROLE_GUEST=guest
+ROLE_ADMINISTRATOR=admin
+ROLE_TRANSLATOR=translator
+ROLE_VALIDATOR=validator
+```
+
+---
+
+## Project Structure
+
+```
+.
+├── Backend/                          # Spring Boot backend
+│   ├── pom.xml                      # Maven configuration
+│   ├── Dockerfile                   # Backend Docker image
+│   └── src/                         # Source code
+├── Frontend/                         # React frontend
+│   ├── package.json                 # Node dependencies
+│   ├── vite.config.ts              # Vite configuration
+│   ├── Dockerfile                   # Frontend Docker image
+│   ├── entrypoint.sh                # Docker entrypoint
+│   └── src/                         # Source code
+├── TestFiles/                        # Test data and fixtures
+├── docker-compose.yml               # Development Docker setup
+├── docker-compose-deploy.yml        # Production Docker setup
+└── README.md                        # This file
+```
+
+---
+
+## API Documentation
+
+Once the backend is running, Swagger API documentation is available at:
+
+```
+http://localhost:8080/swagger-ui.html
+```
+
+---
+
+## Contributing
+
+Contributions are welcome! Please ensure:
+
+- Code follows project style guidelines
+- Tests pass before submitting changes
+- Docker images build successfully
+
+---
+
+## License
+
+This project is part of the Value Catalog Management system for EU datasets.
+
+---
+
+## Support
+
+For issues or questions:
+1. Check existing documentation
+2. Review test files in `/TestFiles`
+3. Consult Keycloak and Spring Boot documentation
+4. Open an issue in the repository
